@@ -5,10 +5,11 @@ var config = {
     physics: {
         default: 'arcade',
         arcade: {
+            debug: true,
             gravity: { y:  600 }
         }
     },
-    scene: [ Dropper ]
+    scene: [ Menu , Dropper ]
 };
 
 var game = new Phaser.Game(config);
