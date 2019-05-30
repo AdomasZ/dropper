@@ -1,18 +1,4 @@
-var config = {
-    type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            debug: true,
-            gravity: { y:  600 }
-        }
-    },
-    scene: [ Menu , Dropper ]
-};
 
-var game = new Phaser.Game(config);
 //
 // function preload ()
 // {
