@@ -19,10 +19,6 @@ class Menu extends Phaser.Scene {
         this.scoreText.setText('Game Over!');
     }
 
-    update(){
-        console.log(score)
-
-    }
 }
 
 // this.input.keyboard.down('keyup_D', (e) => {
