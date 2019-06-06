@@ -3,24 +3,22 @@ class Menu extends Phaser.Scene {
         super({key:"Menu"});
     }
     preload(){
-        this.load.image('ball', './assets/ball.png');
+        this.load.image('menu', './assets/menu.png');
         this.load.image('platform', 'http://labs.phaser.io/assets/sprites/platform.png');
-        this.load.image('start', './assets/startBtn.png')
+        this.load.image('start', './assets/start.png')
     }
 
     create(){
-        // Set up the player ball
-        this.scoreText = this.add.text(16, 50, 'Game over', { fontSize: '32px', fill: '#555' });
-        this.startButton = this.add.sprite(100, 300, 'start').setInteractive();
-        this.startButton.setScale(0.2, 0.2);
+        this.add.image(canvasWidth/2,canvasHeight/2,'menu');
+        this.scoreText = this.add.text(canvasWidth/2 ,canvasHeight/4, 'Game over', { fontSize: '32px', fill: 'rgb(23,63,96)', backgroundColor: 'rgb(250,214,97)', fontFamily: 'roboto'});
+        this.scoreText.setText('High Score: ' + highScore);
+        this.scoreText.x -= this.scoreText.width / 2;
+        this.scoreText.y -= this.scoreText.height / 2;
+        this.startButton = this.add.image(canvasWidth/2 ,canvasHeight/2, 'start').setInteractive();
+        this.startButton.displayWidth -= 90;
+        this.startButton.displayHeight -= 90;
         this.startButton.on('pointerdown', function (pointer) {
             this.scene.start('Dropper');
         }, this);
-        this.scoreText.setText('Game Over!');
     }
-
 }
-
-// this.input.keyboard.down('keyup_D', (e) => {
-//     this.image.x += 1;
-// }, this);

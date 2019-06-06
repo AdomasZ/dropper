@@ -8,14 +8,6 @@ class Dropper extends Phaser.Scene {
             this.platformLeft = '';
             this.platformRight = '';
 
-            this.move = () => {
-                this.platformLeft.y--;
-                this.platformRight.y--;
-                this.objectsOnPlatform.forEach((power)=>{
-                    power.y--;
-                });
-            };
-
             this.destroy = () => {
                 this.platformLeft.destroy();
                 this.platformRight.destroy();
@@ -97,7 +89,6 @@ class Dropper extends Phaser.Scene {
                 this.createBullet(this.getLeftOrRightX(platformLeft, platformRight));
             } else if (chance < shieldChance) {
                 this.createShield(this.getLeftOrRightX(platformLeft, platformRight));
-                this.createShield(this.getLeftOrRightX(platformLeft, platformRight));
             }
 
             platformPosY += platformGapY;
@@ -114,7 +105,6 @@ class Dropper extends Phaser.Scene {
             this.pickup = (power) => {
                 if(power.texture.key === 'bullet'){
                     this.bullets.push(power);
-                    console.log(this.bullets)
                 }
                 power.destroy();
             };
@@ -144,44 +134,41 @@ class Dropper extends Phaser.Scene {
         platformPosY = 400;
 
         this.platforms = this.physics.add.staticGroup();
-        this.levels = [];
         this.bullets = this.physics.add.staticGroup();
         this.shields = this.physics.add.staticGroup();
         this.mines = this.physics.add.staticGroup();
         this.flyingBullets = this.physics.add.staticGroup();
-        this.destroyed = 0;
+        this.levels = [];
 
+        this.destroyedPlatforms = 0;
+        this.shieldTime = 0;
+        this.createLevel();
+        for(var i = 0; i < this.levels[0].objectsOnPlatform.length; i++){
+            this.levels[0].objectsOnPlatform[i].destroy();
+        }
         // Create a few levels
         for(var i = 0; i < 20; i++){
             this.createLevel();
         }
+
         this.player = new this.Player(this.physics.add.sprite(50, 200, 'ball'));
-        // var camera = this.cameras.main;
         this.cameras.main.setBounds(0, 0, canvasWidth);
-        // this.cameras.main.setZoom(1.1);
         this.cameras.main.centerOn(0, 0);
         this.cameras.main.fadeIn(3000);
         this.cameras.main.setBackgroundColor('rgba(249, 214, 98,1)');
-        // make the camera follow the player
-
-
-        // // set background color, so the sky is not black
-        // this.cameras.main.setBackgroundColor('#ccccff');
-        // Set up the player ball
         this.createSpikes();
         this.addColliders();
         this.createInputs();
         this.bulletLoad = 60;
 
         // Scoreboard
-        this.scoreText = this.add.text(16, 50, 'score: 0', { fontSize: '32px', fill: '#111', backgroundColor: '#fff' });
+        this.scoreText = this.add.text(0, 0, 'score: 0', { fontSize: '20px', fill: 'rgb(23,63,96)', backgroundColor: 'rgb(250,214,97)', fontFamily: 'roboto'});
         this.scoreText.setScrollFactor(0);
-        this.scoreText.setTint(0xffffff)
     }
 
     update(){
         this.spikes.y += 1;
-        if (this.player.object.y - this.spikes.y > 600){
+        if (this.player.object.y - this.spikes.y > canvasHeight){
             this.spikes.y += 5;
         }
 
@@ -199,7 +186,7 @@ class Dropper extends Phaser.Scene {
         if(this.levels[0].platformLeft.y < this.player.object.y){
             this.levels[0].destroy();
             this.levels.shift();
-            this.destroyed++;
+            this.destroyedPlatforms++;
             score++;
             this.createLevel();
         }
@@ -210,14 +197,14 @@ class Dropper extends Phaser.Scene {
         this.mines.refresh();
 
         this.scoreText.setText('Score: ' + score
-        + ' \nShield time: ' + this.shieldTime
+        + ' \nShield time: ' + (this.shieldTime/1000) + 'sec.'
         + ' \nBullet amount: ' + (this.player.bullets.length)
         + ' \nBullet load: ' + ((bulletLoadTime - this.bulletLoad) <= 0 && this.player.bullets.length > 0? 'ready' : 'not ready'));
 
         if(this.key_D.isDown){
-            this.player.object.x += 3;
+            this.player.object.x += 4;
         } else if(this.key_A.isDown){
-            this.player.object.x -= 3;
+            this.player.object.x -= 4;
         } else if(this.jumpButton.isDown){
             if(this.bulletLoad > bulletLoadTime){
                 this.bulletLoad = 0;
@@ -250,14 +237,11 @@ class Dropper extends Phaser.Scene {
     addColliders() {
         this.physics.add.collider(this.player.object, this.platforms, (ball, platform) => {
             this.bounce();
-            this.destroyed = 0;
+            this.destroyedPlatforms = 0;
         });
 
         this.physics.add.collider(this.player.object, this.spikes, () => {
-            if(score > highScore){
-                score = highScore;
-            }
-            this.scene.start('Menu');
+            this.endGame();
         });
 
         this.physics.add.collider(this.player.object, this.bullets, (player, bullet) => {
@@ -265,12 +249,15 @@ class Dropper extends Phaser.Scene {
         });
 
         this.mineCollision = this.physics.add.collider(this.player.object, this.mines, () => {
-            this.scene.start('Menu');
+            this.endGame();
         });
-        this.shieldTime = 0;
-        this.shieldIntrerval = null;
+
         this.physics.add.collider(this.player.object, this.shields, (player, shield) => {
             shield.destroy();
+            this.bounce();
+            // Interval needs to be reset here. We're experiencing trouble with clearInterval() if the interval was assigned to this.shieldIntrerval multiple times
+            clearInterval(this.shieldIntrerval);
+            this.shieldIntrerval = null;
             this.shieldTime += shieldTime;
             this.shieldIntrerval = setInterval(() => {this.shieldTime -= 1000}, 1000);
         });
@@ -292,11 +279,11 @@ class Dropper extends Phaser.Scene {
 
     bounce(){
         this.createLevel();
-        if(this.destroyed > 2){
+        if(this.destroyedPlatforms > 2){
             this.levels[0].destroy();
             this.levels.shift();
-            this.destroyed++;
-            score += this.destroyed * 2;
+            this.destroyedPlatforms++;
+            score += this.destroyedPlatforms * 2;
         }
         this.player.object.body.velocity.y = -300;
     }
@@ -320,5 +307,12 @@ class Dropper extends Phaser.Scene {
         bullet.body.width = mineWidth;
         bullet.displayHeight = mineHeight;
         bullet.body.height = mineHeight;
+    }
+
+    endGame(){
+        if(score > highScore){
+            highScore = score;
+        }
+        this.scene.start('Menu');
     }
 }
