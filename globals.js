@@ -1,13 +1,16 @@
 var score = 0;
 var highScore = 0;
-var bulletLoadTime = 120;
+var bulletLoadTime = 3000;
 var shieldTime = 5000;
+var spikeSpeed = 2;
+var movementSpeed = 6;
+
 
 var canvasWidth = 600;
-var canvasHeight = 900;
+var canvasHeight = 800;
 var platformHeight = 20;
 var platformGapX = 130;
-var platformGapY = 130;
+var platformGapY = 150;
 var platformPosY = 400;
 
 var mineWidth = 60;
@@ -20,10 +23,10 @@ var bulletWidth = 20;
 var bulletHeight = 50;
 
 var bulletChance = 0.2;
-var shieldChance = 0.6;
+var shieldChance = 0.4;
 
 WebFontConfig = {
-    google: { families: ["Roboto"]}
+    google: { families: ["Roboto", "Happy Monkey"]}
 };
 
 (function() {
