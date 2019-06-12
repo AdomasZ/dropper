@@ -66,7 +66,7 @@ class Dropper extends Phaser.Scene {
             platformLeft.displayWidth = platformLeftWidth;
             platformLeft.body.width = platformLeftWidth;
             platformLeft.displayHeight = platformHeight;
-            platformLeft.body.height = platformHeight;
+            platformLeft.body.height = 2;
             platformLeft.y = platformPosY;
             this.platformLeft = platformLeft;
 
@@ -75,7 +75,7 @@ class Dropper extends Phaser.Scene {
             platformRight.displayWidth = platformRightWidth;
             platformRight.body.width = platformRightWidth;
             platformRight.displayHeight = platformHeight;
-            platformRight.body.height = platformHeight;
+            platformRight.body.height = 2;
             platformRight.y = platformPosY ;
             this.platformRight = platformRight;
 
@@ -127,6 +127,7 @@ class Dropper extends Phaser.Scene {
             this.object.displayWidth = 50;
             // Cuts the body into a circle
             this.object.body.setCircle(110, 12 , 10);
+            this.object.body.height = 20;
             this.object.setCollideWorldBounds(false);
         };
     }
@@ -163,7 +164,7 @@ class Dropper extends Phaser.Scene {
         this.shieldTime = 0;
 
         // Create a few levels
-        for(var i = 0; i < 20; i++){
+        for(var i = 0; i < 50; i++){
             this.createLevel();
         }
 
