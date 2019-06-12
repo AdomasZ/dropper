@@ -118,6 +118,8 @@ class Dropper extends Phaser.Scene {
                     stage.levels.shift();
                     stage.destroyedPlatforms++;
                     score += stage.destroyedPlatforms * stage.bonusMultiplier;
+                    stage.setBonusText('You earned extra ' + stage.destroyedPlatforms * stage.bonusMultiplier + ' points');
+                    setTimeout(()=>{stage.bonusText.setText('')}, 3000)
                     //reset
                     stage.bonusMultiplier = 2;
                 }
@@ -127,7 +129,6 @@ class Dropper extends Phaser.Scene {
             this.object.displayWidth = 50;
             // Cuts the body into a circle
             this.object.body.setCircle(110, 12 , 10);
-            this.object.body.height = 20;
             this.object.setCollideWorldBounds(false);
         };
     }
@@ -163,6 +164,7 @@ class Dropper extends Phaser.Scene {
         this.bonusMultiplier = 2;
         this.shieldTime = 0;
 
+
         // Create a few levels
         for(var i = 0; i < 50; i++){
             this.createLevel();
@@ -181,7 +183,6 @@ class Dropper extends Phaser.Scene {
         this.scoreText = this.add.text(0, 0, '', { fontSize: '20px', fill: 'rgb(23,63,96)', backgroundColor: 'rgb(250,214,97)', fontFamily: 'roboto'});
         this.scoreText.setScrollFactor(0);
         this.bonusText = this.add.text(0, 100, '', { fontSize: '32px', fill: 'rgb(255, 255, 255)', backgroundColor: 'rgb(234,85,62)', fontFamily: 'roboto'});
-        this.bonusText.x = (canvasWidth / 2) - this.bonusText.displayWidth / 2;
         this.bonusText.setScrollFactor(0);
     }
 
@@ -247,13 +248,6 @@ class Dropper extends Phaser.Scene {
         + ' \nBullet amount: ' + (this.player.bullets.length)
         + ' \nBullet load: ' + ((bulletLoadTime - this.bulletLoad) <= 0 && this.player.bullets.length > 0? 'ready' : 'not ready'));
 
-        // Show bonus multiplier
-        if(this.destroyedPlatforms > 2) {
-            this.bonusText.setText('Bonus: X' + this.bonusMultiplier);
-        } else {
-            this.bonusText.setText('');
-        }
-
         // Handle input
         if(this.key_D.isDown){
             this.player.object.x += movementSpeed;
@@ -268,7 +262,10 @@ class Dropper extends Phaser.Scene {
         }
     }
 
-
+    setBonusText(text){
+        this.bonusText.setText(text);
+        this.bonusText.x = (canvasWidth / 2) - this.bonusText.displayWidth / 2;
+    }
     createSpikes(){
         this.spikes = this.physics.add.sprite(canvasWidth / 2, -2000, 'spikes', true);
         this.spikes.displayWidth = canvasWidth;

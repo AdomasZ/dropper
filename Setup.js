@@ -14,6 +14,7 @@ var config = {
 };
 
 var game = new Phaser.Game(config);
+
 document.addEventListener("DOMContentLoaded", function(){
     document.getElementById('bulletTimer').innerText = `The bullets have a cool-down timer of ${bulletLoadTime / 1000} seconds.`;
     document.getElementById('shieldTimer').innerText = `The shield has a duration of ${shieldTime / 1000} seconds.`;
