@@ -1,5 +1,9 @@
+// If the cookie isn't set
+if(document.cookie < 1){
+    document.cookie = 0;
+}
+var highScore = document.cookie;
 var score = 0;
-var highScore = 0;
 var bulletLoadTime = 3000;
 var shieldTime = 5000;
 var spikeSpeed = 2;

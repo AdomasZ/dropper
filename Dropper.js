@@ -352,6 +352,8 @@ class Dropper extends Phaser.Scene {
     endGame(){
         if(score > highScore){
             highScore = score;
+            // Save the high-score in a cookie
+            document.cookie = highScore;
         }
         this.scene.start('Menu');
     }
