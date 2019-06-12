@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/phaser@3.15.1/dist/phaser-arcade-physics.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
         <script src="./globals.js"></script>
@@ -10,5 +11,23 @@
         <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+        <div id="about">
+            <h1>About</h1>
+            <h2>Instructions</h2>
+            <p>A = move left</p>
+            <p>B = move right</p>
+            <p>SPACE = shoot bullet</p>
+
+            <h2>More</h2>
+            <ul>
+                <li>There are platforms and you are a bouncy ball. Avoid mines because they will end the game if touched. They can be destroyed by a bullet. </li>
+                <li>The spikes are another deadly enemy in this game. So hurry up!</li>
+                <li>The shield also acts as a bouncy platform so be careful.</li>
+                <li>You get more points if you drop trough more than 2 platforms without touching a platform</li>
+                <li id="bulletTimer"></li>
+                <li id="shieldTimer"></li>
+                <li id="chance"></li>
+            </ul>
+        </div>
     </body>
 </html>

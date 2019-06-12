@@ -1,7 +1,22 @@
 canvas{
     margin: auto;
     display: inherit;
+
 }
 body{
     background-color: black;
+    color: white;
+    font-family: Roboto;
+}
+ul{
+    padding-left: 15px;
+    list-style: square;
+}
+li{
+    padding-top: 15px;
+}
+
+#about{
+    float: right;
+    max-width: 30%;
 }
