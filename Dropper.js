@@ -33,7 +33,7 @@ class Dropper extends Phaser.Scene {
             this.createMine = (xPos) => {
                 var mine = stage.mines.create(xPos, platformPosY, 'mine');
                 stage.shapeMine(mine);
-                mine.y -= 25;
+                mine.y -= platformHeight + 10;
                 this.objectsOnPlatform.push(mine);
             };
 

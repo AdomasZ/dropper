@@ -16,8 +16,15 @@ class Menu extends Phaser.Scene {
         this.startButton = this.add.image(canvasWidth/2 ,canvasHeight/2, 'start').setInteractive();
         this.startButton.displayWidth -= 90;
         this.startButton.displayHeight -= 90;
-        this.startButton.on('pointerdown', function (pointer) {
+        this.restartBtn = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        this.startButton.on('pointerdown', function () {
             this.scene.start('Dropper');
         }, this);
+    }
+    update(){
+        if(this.restartBtn.isDown) {
+            this.scene.start('Dropper');
+        }
     }
 }

@@ -12,7 +12,7 @@ var movementSpeed = 6;
 
 var canvasWidth = 600;
 var canvasHeight = 800;
-var platformHeight = 20;
+var platformHeight = 10;
 var platformGapX = 130;
 var platformGapY = 150;
 var platformPosY = 400;
@@ -28,9 +28,9 @@ var bulletHeight = 50;
 
 var bulletChance = 0.2;
 var shieldChance = 0.4;
-
+// Load fonts
 WebFontConfig = {
-    google: { families: ["Roboto", "Happy Monkey"]}
+    google: { families: ["Roboto"]}
 };
 
 (function() {
