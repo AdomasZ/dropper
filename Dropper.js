@@ -96,7 +96,10 @@ class Dropper extends Phaser.Scene {
 
         this.Player = function(object){
             this.object = object;
+            this.bulletLoad = bulletLoadTime;
+            this.bulletInterval;
             this.bullets = [];
+            this.bullets.push('first bullet');
             this.pickup = (power) => {
                 if(power.texture.key === 'bullet'){
                     this.bullets.push(power);
@@ -104,13 +107,18 @@ class Dropper extends Phaser.Scene {
                 power.destroy();
             };
             this.shoot = () => {
-                if(this.bullets.length > 0){
+                if(this.readyToShoot()){
+                    this.bulletLoad = 0;
+                    this.bulletInterval = setInterval(function(){this.bulletLoad += 1000; console.log(this.bulletLoad)}.bind(this),1000);
                     var bullet = stage.physics.add.sprite(this.object.x, this.object.y, 'bullet');
                     bullet.body.velocity.y = 900;
                     stage.shapeBullet(bullet);
                     stage.flyingBullets.add(bullet);
                     this.bullets.pop();
                 }
+            };
+            this.readyToShoot = () => {
+                return this.bullets.length > 0 && this.bulletLoad >= bulletLoadTime;
             };
             this.bounce = () => {
                 if(stage.destroyedPlatforms > 2){
@@ -159,7 +167,6 @@ class Dropper extends Phaser.Scene {
         this.flyingBullets = this.physics.add.staticGroup();
         this.levels = [];
         this.cameraY = 0;
-        this.bulletLoad = bulletLoadTime;
         this.destroyedPlatforms = 0;
         this.bonusMultiplier = 2;
         this.shieldTime = 0;
@@ -241,12 +248,14 @@ class Dropper extends Phaser.Scene {
         this.bullets.refresh();
         this.shields.refresh();
         this.mines.refresh();
-
+        if(this.player.bulletLoad >= bulletLoadTime) {
+            clearInterval(this.player.bulletInterval);
+        }
         // Update HUD
         this.scoreText.setText('Score: ' + score
         + ' \nShield time: ' + (this.shieldTime/1000) + 'sec.'
         + ' \nBullet amount: ' + (this.player.bullets.length)
-        + ' \nBullet load: ' + ((bulletLoadTime - this.bulletLoad) <= 0 && this.player.bullets.length > 0? 'ready' : 'not ready'));
+        + ' \nBullet load: ' + (this.player.readyToShoot() ? 'ready' : 'not ready'));
 
         // Handle input
         if(this.key_D.isDown){
@@ -254,11 +263,7 @@ class Dropper extends Phaser.Scene {
         } else if(this.key_A.isDown) {
             this.player.object.x -= movementSpeed;
         } else if(this.shootBtn.isDown){
-            if(this.bulletLoad >= bulletLoadTime){
-                this.bulletLoad = 0;
-                setInterval(()=>{this.bulletLoad += 1000;},1000);
-                this.player.shoot(this);
-            }
+            this.player.shoot();
         }
     }
 
@@ -350,6 +355,7 @@ class Dropper extends Phaser.Scene {
     }
 
     endGame(){
+        clearInterval(this.player.bulletInterval);
         if(score > highScore){
             highScore = score;
             // Save the high-score in a cookie
