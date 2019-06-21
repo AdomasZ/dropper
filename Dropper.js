@@ -109,7 +109,7 @@ class Dropper extends Phaser.Scene {
             this.shoot = () => {
                 if(this.readyToShoot()){
                     this.bulletLoad = 0;
-                    this.bulletInterval = setInterval(function(){this.bulletLoad += 1000; console.log(this.bulletLoad)}.bind(this),1000);
+                    this.bulletInterval = setInterval(function(){this.bulletLoad += 1000;}.bind(this),1000);
                     var bullet = stage.physics.add.sprite(this.object.x, this.object.y, 'bullet');
                     bullet.body.velocity.y = 900;
                     stage.shapeBullet(bullet);
